@@ -194,6 +194,8 @@ function switchTab(index) {
 
     activeTabIndex = index;
 
+    if (index === 6) updateSuccessStats();
+
     // Rola a área do formulário de volta para o topo no mobile
     if (window.innerWidth <= 992) {
         document.getElementById('roteiro').scrollIntoView({ behavior: 'smooth' });
@@ -296,11 +298,16 @@ function calculateProgress() {
         });
     });
 
+    const sectionsCompleted = Object.keys(surveyStructure).filter(sec => {
+        return sectionCounts[sec] === surveyStructure[sec].length;
+    }).length;
+
     return {
         totalAnswered: answeredQuestions,
         totalQuestions: totalQuestions,
         percentage: Math.round((answeredQuestions / totalQuestions) * 100),
-        sections: sectionCounts
+        sections: sectionCounts,
+        sectionsCompleted: sectionsCompleted
     };
 }
 
@@ -346,24 +353,192 @@ function updateSurveyProgressView() {
 }
 
 function resetSurvey() {
-    if (confirm('Tem certeza que deseja limpar todas as respostas do formulário atual?')) {
-        localStorage.removeItem('unifenas_survey_draft');
-        
-        // Limpa campos de texto
-        const form = document.getElementById('interview-form');
-        const textFields = form.querySelectorAll('input[type="text"], textarea');
-        textFields.forEach(field => field.value = '');
+    showConfirmModal(
+        'Limpar Entrevista?',
+        'Todas as respostas preenchidas serão apagadas. Essa ação não pode ser desfeita.',
+        () => {
+            localStorage.removeItem('unifenas_survey_draft');
 
-        // Limpa radios
-        const radios = form.querySelectorAll('input[type="radio"]');
-        radios.forEach(radio => {
-            radio.checked = false;
-            radio.parentElement.classList.remove('checked');
+            const form = document.getElementById('interview-form');
+            form.querySelectorAll('input[type="text"], textarea').forEach(f => f.value = '');
+            form.querySelectorAll('input[type="radio"]').forEach(r => {
+                r.checked = false;
+                r.parentElement.classList.remove('checked');
+            });
+
+            switchTab(0);
+        }
+    );
+}
+
+function updateSuccessStats() {
+    const progress = calculateProgress();
+
+    document.getElementById('stat-answered').textContent = `${progress.totalAnswered}/27`;
+    document.getElementById('stat-sections').textContent = `${progress.sectionsCompleted}/5`;
+    document.getElementById('stat-percent').textContent  = `${progress.percentage}%`;
+
+    const btn = document.querySelector('.btn-success-send');
+    if (!btn) return;
+
+    if (progress.percentage < 100) {
+        btn.disabled = true;
+        btn.style.opacity = '0.45';
+        btn.style.cursor  = 'not-allowed';
+        btn.style.boxShadow = 'none';
+        btn.title = 'Preencha todas as perguntas antes de enviar';
+    } else {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.cursor  = 'pointer';
+        btn.style.boxShadow = '';
+        btn.title = '';
+    }
+}
+
+async function sendToTelegram() {
+    const progress = calculateProgress();
+    if (progress.percentage < 100) {
+        showFeedbackModal('error', 'Formulário Incompleto', `Ainda faltam ${progress.totalQuestions - progress.totalAnswered} pergunta(s) sem resposta. Preencha todas antes de enviar.`);
+        return;
+    }
+
+    const BOT_TOKEN = '8662983200:AAH-sjAsscEQkv65q4-8n4ccQyO1m1zWnug';
+    const CHAT_ID = '-1004329580949';
+
+    const savedData = localStorage.getItem('unifenas_survey_draft');
+    const data = savedData ? JSON.parse(savedData) : {};
+
+    const sections = [
+        {
+            title: '👤 1. O PRODUTOR',
+            questions: [
+                { id: 'q1',  text: 'Há quantos anos trabalha com café?' },
+                { id: 'q2',  text: 'Principal atividade na propriedade?' },
+                { id: 'q3',  text: 'Tamanho da área de café (hectares)?' },
+                { id: 'q4',  text: 'Produção média anual?' },
+                { id: 'q5',  text: 'Nível de escolaridade?' },
+                { id: 'q23', text: 'Como vende o café?' }
+            ]
+        },
+        {
+            title: '☀️ 2. SECAGEM',
+            questions: [
+                { id: 'q6',  text: 'Como acompanha a secagem no terreiro?' },
+                { id: 'q7',  text: 'Como decide o ponto de retirada?' },
+                { id: 'q8',  text: 'Usa algum método ou referência?' },
+                { id: 'q9',  text: 'Mais alguém participa da decisão?' },
+                { id: 'q10', text: 'Maior preocupação ao definir o momento de retirar?' },
+                { id: 'q11', text: 'Já teve café fora do ponto? Como foi?' },
+                { id: 'q24', text: 'Tipo de secagem utilizada?' }
+            ]
+        },
+        {
+            title: '📱 3. TECNOLOGIA',
+            questions: [
+                { id: 'q12', text: 'Utiliza smartphone no dia a dia?' },
+                { id: 'q13', text: 'Modelo ou marca do celular?' },
+                { id: 'q14', text: 'Usa apps de lavoura ou clima?' },
+                { id: 'q15', text: 'Já usou app para produção de café?' },
+                { id: 'q16', text: 'Facilidade para aprender novos apps?' },
+                { id: 'q25', text: 'Tem sinal de internet na propriedade?' }
+            ]
+        },
+        {
+            title: '⚠️ 4. DIFICULDADES',
+            questions: [
+                { id: 'q17', text: 'O que mais dificulta o acompanhamento da secagem?' },
+                { id: 'q18', text: 'Alguma etapa gera dúvidas ou insegurança?' },
+                { id: 'q19', text: 'O que mais gera retrabalho?' },
+                { id: 'q26', text: 'Já teve café desvalorizado por qualidade?' }
+            ]
+        },
+        {
+            title: '✅ 5. SOLUÇÕES',
+            questions: [
+                { id: 'q20', text: 'Analisar o café pelo celular seria útil?' },
+                { id: 'q21', text: 'O que tornaria a ferramenta útil?' },
+                { id: 'q22', text: 'O que faria você confiar na ferramenta?' },
+                { id: 'q27', text: 'Como prefere receber o resultado no app?' }
+            ]
+        }
+    ];
+
+    const apiUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+
+    try {
+        let msg = `☕ <b>NOVA ENTREVISTA — PROJETO UNIFENAS</b>\n`;
+        msg += `📅 <i>${new Date().toLocaleString('pt-BR')}</i>\n`;
+        msg += `${'─'.repeat(28)}\n\n`;
+
+        for (const section of sections) {
+            msg += `<b>${section.title}</b>\n`;
+            section.questions.forEach(q => {
+                const answer = data[q.id] || '—';
+                msg += `▸ <i>${q.text}</i>\n${answer}\n\n`;
+            });
+            msg += `${'─'.repeat(28)}\n\n`;
+        }
+
+        await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'HTML' })
         });
 
-        // Volta ao início
-        switchTab(0);
+        showFeedbackModal('success', 'Respostas Enviadas!', 'A entrevista foi registrada com sucesso. Obrigado pela participação!');
+    } catch (e) {
+        showFeedbackModal('error', 'Erro ao Enviar', 'Não foi possível enviar as respostas. Verifique sua conexão com a internet e tente novamente.');
     }
+}
+
+function showFeedbackModal(type, title, text) {
+    const overlay = document.getElementById('feedback-modal-overlay');
+    const icon    = document.getElementById('feedback-modal-icon');
+    const titleEl = document.getElementById('feedback-modal-title');
+    const textEl  = document.getElementById('feedback-modal-text');
+    const btn     = document.getElementById('feedback-modal-btn');
+
+    const successSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
+    const errorSvg   = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+
+    icon.className  = `feedback-modal-icon ${type}`;
+    icon.innerHTML  = type === 'success' ? successSvg : errorSvg;
+    btn.className   = `feedback-modal-btn ${type}`;
+    titleEl.textContent = title;
+    textEl.textContent  = text;
+
+    overlay.classList.add('active');
+}
+
+function showConfirmModal(title, text, onConfirm) {
+    const overlay    = document.getElementById('feedback-modal-overlay');
+    const icon       = document.getElementById('feedback-modal-icon');
+    const titleEl    = document.getElementById('feedback-modal-title');
+    const textEl     = document.getElementById('feedback-modal-text');
+    const btn        = document.getElementById('feedback-modal-btn');
+    const cancelBtn  = document.getElementById('feedback-modal-cancel');
+
+    icon.className = 'feedback-modal-icon warning';
+    icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
+    btn.className      = 'feedback-modal-btn warning';
+    btn.textContent    = 'Sim, limpar';
+    cancelBtn.style.display = 'block';
+    titleEl.textContent = title;
+    textEl.textContent  = text;
+
+    btn.onclick = () => { closeFeedbackModal(); onConfirm(); };
+    cancelBtn.onclick = closeFeedbackModal;
+    overlay.onclick   = closeFeedbackModal;
+
+    overlay.classList.add('active');
+}
+
+function closeFeedbackModal() {
+    const overlay = document.getElementById('feedback-modal-overlay');
+    overlay.classList.remove('active');
+    document.getElementById('feedback-modal-cancel').style.display = 'none';
+    document.getElementById('feedback-modal-btn').textContent = 'OK';
 }
 
 function exportSurveyData() {

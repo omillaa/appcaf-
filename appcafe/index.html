@@ -320,10 +320,6 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
                         Limpar Dados
                     </button>
-                    <button class="btn-survey-action btn-export" onclick="exportSurveyData()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                        Exportar Relatório
-                    </button>
                 </div>
             </div>
 
@@ -702,20 +698,45 @@
                         <!-- TAB 6: SUCESSO / FIM -->
                         <div class="survey-panel" id="panel-6">
                             <div class="survey-success-view">
+                                <div class="success-badge-top">Entrevista Concluída</div>
+
                                 <div class="success-icon-circle">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                                 </div>
-                                <h3>Entrevista Pronta para Exportação!</h3>
-                                <p>Muito obrigado pela participação! Sua experiência é fundamental para o sucesso do projeto e para a construção de soluções que ajudem na cafeicultura.</p>
-                                
+
+                                <div class="success-text-block">
+                                    <h3>Obrigado pela participação! ☕</h3>
+                                    <p>Suas respostas são fundamentais para construirmos uma solução que realmente faça diferença no dia a dia da lavoura.</p>
+                                </div>
+
+                                <div class="success-stats-row">
+                                    <div class="success-stat">
+                                        <span class="success-stat-number" id="stat-answered">0</span>
+                                        <span class="success-stat-label">Perguntas respondidas</span>
+                                    </div>
+                                    <div class="success-stat-divider"></div>
+                                    <div class="success-stat">
+                                        <span class="success-stat-number" id="stat-sections">0</span>
+                                        <span class="success-stat-label">Seções concluídas</span>
+                                    </div>
+                                    <div class="success-stat-divider"></div>
+                                    <div class="success-stat">
+                                        <span class="success-stat-number" id="stat-percent">0%</span>
+                                        <span class="success-stat-label">Formulário completo</span>
+                                    </div>
+                                </div>
+
                                 <div class="success-actions">
-                                    <button type="button" class="btn-primary" onclick="exportSurveyData()">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                                        Baixar Relatório (.txt)
+                                    <button type="button" class="btn-success-send" onclick="sendToTelegram()">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                        Enviar Respostas
                                     </button>
-                                    <button type="button" class="btn-secondary" onclick="resetSurvey()">
-                                        Nova Entrevista
-                                    </button>
+                                    <div class="success-secondary-actions">
+                                        <button type="button" class="btn-success-secondary" onclick="resetSurvey()">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                                            Nova Entrevista
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -913,6 +934,19 @@
 
             <div style="width: 200px; display:flex; justify-content:flex-end;">
                 <span style="font-size:0.85rem; opacity:0.5;">Use as Setas (← / →) ou Barra de Espaço</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Feedback / Confirmação -->
+    <div class="feedback-modal-overlay" id="feedback-modal-overlay" onclick="closeFeedbackModal()">
+        <div class="feedback-modal" id="feedback-modal" onclick="event.stopPropagation()">
+            <div class="feedback-modal-icon" id="feedback-modal-icon"></div>
+            <h3 class="feedback-modal-title" id="feedback-modal-title"></h3>
+            <p class="feedback-modal-text" id="feedback-modal-text"></p>
+            <div class="feedback-modal-actions">
+                <button class="feedback-modal-btn" id="feedback-modal-btn" onclick="closeFeedbackModal()">OK</button>
+                <button class="feedback-modal-cancel" id="feedback-modal-cancel" onclick="closeFeedbackModal()">Cancelar</button>
             </div>
         </div>
     </div>
