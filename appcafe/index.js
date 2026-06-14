@@ -162,11 +162,11 @@ const totalTabs = 7; // Apresentação (0), 5 Seções (1-5), Conclusão (6)
 
 // Estrutura das perguntas por seção para mapeamento de progresso
 const surveyStructure = {
-    1: ['q1', 'q2', 'q3', 'q4', 'q5'],
-    2: ['q6', 'q7', 'q8', 'q9', 'q10', 'q11'],
-    3: ['q12', 'q13', 'q14', 'q15', 'q16'],
-    4: ['q17', 'q18', 'q19'],
-    5: ['q20', 'q21', 'q22']
+    1: ['q1', 'q2', 'q3', 'q4', 'q5', 'q23'],
+    2: ['q6', 'q7', 'q8', 'q9', 'q10', 'q11', 'q24'],
+    3: ['q12', 'q13', 'q14', 'q15', 'q16', 'q25'],
+    4: ['q17', 'q18', 'q19', 'q26'],
+    5: ['q20', 'q21', 'q22', 'q27']
 };
 
 function switchTab(index) {
@@ -280,7 +280,7 @@ function calculateProgress() {
     
     // Contagem geral
     let answeredQuestions = 0;
-    const totalQuestions = 22;
+    const totalQuestions = 27;
 
     // Contagem por seção
     const sectionCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
@@ -393,7 +393,12 @@ function exportSurveyData() {
         q19: "O que mais gera perda de tempo ou retrabalho nesse processo?",
         q20: "Se fosse possível analisar o café pelo celular para ajudar a identificar o ponto de secagem, você acha que isso seria útil?",
         q21: "O que tornaria uma ferramenta assim realmente útil para você?",
-        q22: "O que faria você confiar em uma ferramenta desse tipo?"
+        q22: "O que faria você confiar em uma ferramenta desse tipo?",
+        q23: "Como você vende seu café?",
+        q24: "Qual tipo de secagem você utiliza na propriedade?",
+        q25: "Você tem sinal de internet na propriedade?",
+        q26: "Você já teve café desvalorizado ou rejeitado por problemas de qualidade?",
+        q27: "Como você preferiria receber o resultado da análise no aplicativo?"
     };
 
     let report = "";

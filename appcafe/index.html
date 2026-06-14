@@ -343,23 +343,23 @@
                     </button>
                     <button class="tab-btn" onclick="switchTab(1)">
                         <span>1. O Produtor</span>
-                        <span class="badge-count" id="badge-tab-1">0/5</span>
+                        <span class="badge-count" id="badge-tab-1">0/6</span>
                     </button>
                     <button class="tab-btn" onclick="switchTab(2)">
                         <span>2. Secagem</span>
-                        <span class="badge-count" id="badge-tab-2">0/6</span>
+                        <span class="badge-count" id="badge-tab-2">0/7</span>
                     </button>
                     <button class="tab-btn" onclick="switchTab(3)">
                         <span>3. Tecnologia</span>
-                        <span class="badge-count" id="badge-tab-3">0/5</span>
+                        <span class="badge-count" id="badge-tab-3">0/6</span>
                     </button>
                     <button class="tab-btn" onclick="switchTab(4)">
                         <span>4. Dificuldades</span>
-                        <span class="badge-count" id="badge-tab-4">0/3</span>
+                        <span class="badge-count" id="badge-tab-4">0/4</span>
                     </button>
                     <button class="tab-btn" onclick="switchTab(5)">
                         <span>5. Soluções</span>
-                        <span class="badge-count" id="badge-tab-5">0/3</span>
+                        <span class="badge-count" id="badge-tab-5">0/4</span>
                     </button>
                     <button class="tab-btn" onclick="switchTab(6)">
                         <span>Conclusão</span>
@@ -422,6 +422,25 @@
                                 <input type="text" class="form-input-text" id="q5" placeholder="Ex: Ensino Médio completo, Fundamental...">
                             </div>
 
+                            <!-- Q23 -->
+                            <div class="question-group">
+                                <label class="question-label"><span class="q-num">23.</span> Como você vende seu café?</label>
+                                <div class="options-grid">
+                                    <label class="option-radio-label">
+                                        <input type="radio" name="q23" value="Cooperativa" onchange="handleRadioChange(this)">
+                                        Cooperativa
+                                    </label>
+                                    <label class="option-radio-label">
+                                        <input type="radio" name="q23" value="Intermediário" onchange="handleRadioChange(this)">
+                                        Intermediário
+                                    </label>
+                                    <label class="option-radio-label">
+                                        <input type="radio" name="q23" value="Direto ao consumidor" onchange="handleRadioChange(this)">
+                                        Direto ao consumidor
+                                    </label>
+                                </div>
+                            </div>
+
                             <div class="panel-navigation">
                                 <button type="button" class="btn-nav-prev" onclick="switchTab(0)">Voltar</button>
                                 <button type="button" class="btn-nav-next" onclick="switchTab(2)">Próxima Seção</button>
@@ -469,6 +488,25 @@
                             <div class="question-group">
                                 <label class="question-label" for="q11"><span class="q-num">11.</span> Você já teve alguma situação em que o café saiu antes ou depois do ponto ideal? Como foi?</label>
                                 <textarea class="form-input-text" id="q11" rows="2" placeholder="Ex: Sim, choveu de surpresa / Sim, perdi qualidade no lote..."></textarea>
+                            </div>
+
+                            <!-- Q24 -->
+                            <div class="question-group">
+                                <label class="question-label"><span class="q-num">24.</span> Qual tipo de secagem você utiliza na propriedade?</label>
+                                <div class="options-grid">
+                                    <label class="option-radio-label">
+                                        <input type="radio" name="q24" value="Terreiro convencional" onchange="handleRadioChange(this)">
+                                        Terreiro convencional
+                                    </label>
+                                    <label class="option-radio-label">
+                                        <input type="radio" name="q24" value="Terreiro suspenso" onchange="handleRadioChange(this)">
+                                        Terreiro suspenso
+                                    </label>
+                                    <label class="option-radio-label">
+                                        <input type="radio" name="q24" value="Secador mecânico" onchange="handleRadioChange(this)">
+                                        Secador mecânico
+                                    </label>
+                                </div>
                             </div>
 
                             <div class="panel-navigation">
@@ -536,6 +574,25 @@
                                 </div>
                             </div>
 
+                            <!-- Q25 -->
+                            <div class="question-group">
+                                <label class="question-label"><span class="q-num">25.</span> Você tem sinal de internet na propriedade?</label>
+                                <div class="options-grid">
+                                    <label class="option-radio-label">
+                                        <input type="radio" name="q25" value="Sim, bom sinal" onchange="handleRadioChange(this)">
+                                        Sim, bom sinal
+                                    </label>
+                                    <label class="option-radio-label">
+                                        <input type="radio" name="q25" value="Fraco ou instável" onchange="handleRadioChange(this)">
+                                        Fraco ou instável
+                                    </label>
+                                    <label class="option-radio-label">
+                                        <input type="radio" name="q25" value="Não tenho" onchange="handleRadioChange(this)">
+                                        Não tenho
+                                    </label>
+                                </div>
+                            </div>
+
                             <div class="panel-navigation">
                                 <button type="button" class="btn-nav-prev" onclick="switchTab(2)">Voltar</button>
                                 <button type="button" class="btn-nav-next" onclick="switchTab(4)">Próxima Seção</button>
@@ -565,6 +622,12 @@
                             <div class="question-group">
                                 <label class="question-label" for="q19"><span class="q-num">19.</span> O que mais gera perda de tempo ou retrabalho nesse processo?</label>
                                 <textarea class="form-input-text" id="q19" rows="2" placeholder="Ex: Cobrir e descobrir terreiro por causa de garoa, mexer lote mal espalhado..."></textarea>
+                            </div>
+
+                            <!-- Q26 -->
+                            <div class="question-group">
+                                <label class="question-label" for="q26"><span class="q-num">26.</span> Você já teve café desvalorizado ou rejeitado por problemas de qualidade?</label>
+                                <textarea class="form-input-text" id="q26" rows="2" placeholder="Ex: Sim, tive lote recusado na cooperativa por excesso de umidade..."></textarea>
                             </div>
 
                             <div class="panel-navigation">
@@ -609,6 +672,25 @@
                             <div class="question-group">
                                 <label class="question-label" for="q22"><span class="q-num">22.</span> O que faria você confiar em uma ferramenta desse tipo?</label>
                                 <textarea class="form-input-text" id="q22" rows="2" placeholder="Ex: Ver o teste na prática comparando com o medidor tradicional da cooperativa..."></textarea>
+                            </div>
+
+                            <!-- Q27 -->
+                            <div class="question-group">
+                                <label class="question-label"><span class="q-num">27.</span> Como você preferiria receber o resultado da análise no aplicativo?</label>
+                                <div class="options-grid">
+                                    <label class="option-radio-label">
+                                        <input type="radio" name="q27" value="Texto na tela" onchange="handleRadioChange(this)">
+                                        Texto na tela
+                                    </label>
+                                    <label class="option-radio-label">
+                                        <input type="radio" name="q27" value="Áudio (voz)" onchange="handleRadioChange(this)">
+                                        Áudio (voz)
+                                    </label>
+                                    <label class="option-radio-label">
+                                        <input type="radio" name="q27" value="Imagem / ícone colorido" onchange="handleRadioChange(this)">
+                                        Imagem / ícone
+                                    </label>
+                                </div>
                             </div>
 
                             <div class="panel-navigation">
