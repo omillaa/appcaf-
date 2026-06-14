@@ -407,8 +407,8 @@ async function sendToTelegram() {
         return;
     }
 
-    const BOT_TOKEN = '8662983200:AAH-sjAsscEQkv65q4-8n4ccQyO1m1zWnug';
-    const CHAT_ID = '-1004329580949';
+    const BOT_TOKEN = APP_CONFIG.TELEGRAM_BOT_TOKEN;
+    const CHAT_ID = APP_CONFIG.TELEGRAM_CHAT_ID;
 
     const savedData = localStorage.getItem('unifenas_survey_draft');
     const data = savedData ? JSON.parse(savedData) : {};
