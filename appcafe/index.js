@@ -196,7 +196,11 @@ function switchTab(index) {
 
     if (index === 6) updateSuccessStats();
 
-    // Rola a área do formulário de volta para o topo no mobile
+    // Volta o scroll do painel para o topo sempre
+    const formContent = document.querySelector('.survey-form-content');
+    if (formContent) formContent.scrollTop = 0;
+
+    // Rola a página até a seção no mobile
     if (window.innerWidth <= 992) {
         document.getElementById('roteiro').scrollIntoView({ behavior: 'smooth' });
     }
